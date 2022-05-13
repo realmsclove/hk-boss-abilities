@@ -1,6 +1,5 @@
 using Satchel;
 using HutongGames.PlayMaker;
-using HutongGames.PlayMaker.Actions;
 using UnityEngine;
 
 namespace BossAbilities {
