@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <OutputPath>bin/$(Configuration)/</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>lib/Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="MMHOOK_Assembly-CSharp">
+      <HintPath>lib/MMHOOK_Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMaker">
+      <HintPath>lib/PlayMaker.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>lib/UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>lib/UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Physics2DModule">
+      <HintPath>lib/UnityEngine.Physics2DModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule">
+      <HintPath>lib/UnityEngine.ParticleSystemModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Satchel">
+      <HintPath>lib/Satchel.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="CopyMod" AfterTargets="PostBuildEvent">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="/home/clove/.steam/steam/steamapps/common/Hollow Knight/hollow_knight_Data/Managed/Mods/BossAbilities" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="/home/clove/.steam/steam/steamapps/common/Hollow Knight/hollow_knight_Data/Managed/Mods/BossAbilities" SkipUnchangedFiles="true" />
+  </Target>
+</Project>
