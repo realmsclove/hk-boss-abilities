@@ -9,7 +9,7 @@ namespace BossAbilities {
         public BossAbilities() : base("BossAbilities") {}
         public override string GetVersion() => "v0";
 
-        private List<IAbility> abilities;
+        public static List<IAbility> Abilities;
         public static Dictionary<string, Dictionary<string, GameObject>> Preloads;
 
         // @TODO: have abilities declare the preloads they need and collect them here
@@ -23,15 +23,16 @@ namespace BossAbilities {
 
             On.HeroController.Awake += delegate(On.HeroController.orig_Awake orig, HeroController self) {
                 orig.Invoke(self);
+                new TriggerManager().RegisterTriggers();
 
-                foreach(IAbility ability in abilities) {
+                foreach(IAbility ability in Abilities) {
                     ability.Load();
                 }
             };
         }
 
         private void LoadAbilities() {
-            abilities = new List<IAbility>();
+            Abilities = new List<IAbility>();
 
             // Find all abilities
             var assembly = Assembly.GetExecutingAssembly();
@@ -39,11 +40,11 @@ namespace BossAbilities {
                 if (type.GetInterface("IAbility") != null) {
                     // Type is an ability
 
-                    abilities.Add(Activator.CreateInstance(type) as IAbility);
+                    Abilities.Add(Activator.CreateInstance(type) as IAbility);
                 }
             }
 
-            foreach (IAbility ability in abilities) {
+            foreach (IAbility ability in Abilities) {
                 Log($"Loading ability {ability.Name}!");
                 ability.Load();
             }
