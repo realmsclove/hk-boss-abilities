@@ -14,7 +14,8 @@ namespace BossAbilities {
 
         // @TODO: have abilities declare the preloads they need and collect them here
         public override List<(string, string)> GetPreloadNames() => new List<(string, string)> {
-            ("GG_Mantis_Lords", "Shot Mantis Lord")
+            ("GG_Mantis_Lords", "Shot Mantis Lord"),
+            ("GG_Hollow_Knight", "Battle Scene/HK Prime/Stomp Plumes")
         };
 
         public override void Initialize(Dictionary<string, Dictionary<string, GameObject>> preloadedObjects) {
