@@ -5,7 +5,8 @@ namespace BossAbilities {
 
     public enum AbilityTrigger {
         Fireball,
-        Quake
+        Quake,
+        Dash
     }
 
     public class TriggerManager {
@@ -17,6 +18,11 @@ namespace BossAbilities {
 
             // Descending Dark
             HeroController.instance.spellControl.GetState("Q2 Land").InsertCustomAction("Q2 Land", () => HandleTrigger(AbilityTrigger.Quake), 13);
+
+            // Dash
+            On.HeroController.HeroDash += delegate(On.HeroController.orig_HeroDash orig, HeroController self) {
+                HandleTrigger(AbilityTrigger.Dash);
+            };
         }
 
         private void HandleTrigger(AbilityTrigger trigger) {
