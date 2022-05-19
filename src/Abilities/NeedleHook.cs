@@ -11,8 +11,8 @@ namespace BossAbilities {
         public string Name => "Needle Hook";
         public AbilityTrigger Trigger => AbilityTrigger.Dash;
 
-        private float THROW_TIME = 0.2f;
-        private float PULL_TIME = 0.45f;
+        private float THROW_SPEED = 100f;
+        private float PULL_SPEED = 75f;
 
         private GameObject needlePreload;
         private GameObject needle;
@@ -78,16 +78,21 @@ namespace BossAbilities {
 
             needle.transform.position = hit.point;
 
-            float time = 0;
-            while (time < THROW_TIME) {
-                needle.transform.position = Vector3.Lerp(HeroController.instance.transform.position, hit.point, Mathf.SmoothStep(0, 1f, time / THROW_TIME));
-                time += Time.deltaTime;
+            float time = hit.distance / THROW_SPEED;
+
+            float t = 0;
+            while (t < time) {
+                needle.transform.position = Vector3.Lerp(HeroController.instance.transform.position, hit.point, Mathf.SmoothStep(0, 1f, t / time));
+                t += Time.deltaTime;
 
                 yield return null;
             }
 
             HeroController.instance.RegainControl();
             HeroController.instance.AffectedByGravity(true);
+
+            // Hold-to-pull
+            if (InputHandler.Instance.inputActions.dash.IsPressed) Perform();
         }
 
         private IEnumerator PullCoroutine() {
@@ -99,20 +104,22 @@ namespace BossAbilities {
             // Move the player off the ground slightly
             HeroController.instance.transform.Translate(new Vector3(0, 0.01f, 0));
 
-            float time = 0;
             Vector3 startPos = HeroController.instance.transform.position;
-
             source.PlayOneShot(audioClips["hornet_dash"]);
 
-            while (time < PULL_TIME) {
+            float dist = (startPos - needle.transform.position).magnitude;
+            float time = dist / PULL_SPEED;
+
+            float t = 0;
+            while (t < time) {
 
                 // Move unless it would pass through a terrain collider
                 Vector3 oldPos = HeroController.instance.transform.position;
-                Vector3 newPos = Vector3.Lerp(startPos, needle.transform.position, Mathf.SmoothStep(0, 1f, time / PULL_TIME));
+                Vector3 newPos = Vector3.Lerp(startPos, needle.transform.position, Mathf.SmoothStep(0, 1f, t / time));
 
                 if (Physics2D.Linecast(oldPos - new Vector3(0, HeroController.instance.GetComponent<Collider2D>().bounds.size.y / 2, 0), newPos, 1 << 8).collider != null) {
                     // Collided with something, end the pull
-                    time = PULL_TIME;
+                    t = time;
                 } else {
                     // Good to go, no collision
                     HeroController.instance.transform.position = newPos;
@@ -122,10 +129,10 @@ namespace BossAbilities {
                 Physics2D.SyncTransforms();
                 if (HeroController.instance.GetComponent<Collider2D>().IsTouchingLayers(1 << 8)) {
                     HeroController.instance.transform.position = oldPos;
-                    time = PULL_TIME;
+                    t = time;
                 }
 
-                time += Time.deltaTime;
+                t += Time.deltaTime;
 
                 yield return null;
             }
