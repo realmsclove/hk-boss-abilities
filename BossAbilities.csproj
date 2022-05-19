@@ -27,6 +27,12 @@
     <Reference Include="UnityEngine.ParticleSystemModule">
       <HintPath>lib/UnityEngine.ParticleSystemModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.Physics2DModule">
+      <HintPath>lib/UnityEngine.Physics2DModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>lib/UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
     <Reference Include="Satchel">
       <HintPath>lib/Satchel.dll</HintPath>
     </Reference>

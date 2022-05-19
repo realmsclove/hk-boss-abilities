@@ -13,4 +13,5 @@ Very scuffed right now, edit BossAbilities.csproj to have the right HK path, and
 * `UnityEngine.CoreModule.dll`
 * `UnityEngine.Physics2DModule.dll`
 * `UnityEngine.ParticleSystemModule.dll`
+* `UnityEngine.Physics2DModule.dll`
 * Additionally, add Satchel 0.7.6 or above

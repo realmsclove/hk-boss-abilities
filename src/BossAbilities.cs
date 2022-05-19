@@ -17,7 +17,8 @@ namespace BossAbilities {
             ("GG_Mantis_Lords", "Shot Mantis Lord"),
             ("GG_Hollow_Knight", "Battle Scene/HK Prime/Stomp Plumes"),
             ("Deepnest_East_Hornet_boss", "Hornet Outskirts Battle Encounter/Thread"),
-            ("GG_Hornet_1", "Boss Holder/Hornet Boss 1/Needle")
+            ("GG_Hornet_1", "Boss Holder/Hornet Boss 1/Needle"),
+            ("GG_Hornet_1", "Boss Holder/Hornet Boss 1")
         };
 
         public override void Initialize(Dictionary<string, Dictionary<string, GameObject>> preloadedObjects) {
@@ -29,6 +30,7 @@ namespace BossAbilities {
                 new TriggerManager().RegisterTriggers();
 
                 foreach(IAbility ability in Abilities) {
+                    Log($"Loading ability {ability.Name}!");
                     ability.Load();
                 }
             };
@@ -48,8 +50,7 @@ namespace BossAbilities {
             }
 
             foreach (IAbility ability in Abilities) {
-                Log($"Loading ability {ability.Name}!");
-                ability.Load();
+                Log($"Registered ability {ability.Name}!");
             }
         }
     }
