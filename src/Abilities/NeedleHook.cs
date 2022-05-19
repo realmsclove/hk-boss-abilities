@@ -14,30 +14,46 @@ namespace BossAbilities {
         private float THROW_TIME = 0.2f;
         private float PULL_TIME = 0.45f;
 
+        private GameObject needlePreload;
         private GameObject needle;
+
         private GameObject thread;
 
         private AudioSource source;
         private Dictionary<string, AudioClip> audioClips;
 
         public void Load() {
-            needle = GameObject.Instantiate(BossAbilities.Preloads["GG_Hornet_1"]["Boss Holder/Hornet Boss 1/Needle"], HeroController.instance.transform.position, Quaternion.identity);
-            GameObject.DontDestroyOnLoad(needle);
+            needlePreload = BossAbilities.Preloads["GG_Hornet_1"]["Boss Holder/Hornet Boss 1/Needle"];
 
-            thread = needle.Find("Thread");
             source = HeroController.instance.GetComponent<AudioSource>();
 
-            needle.LocateMyFSM("Control").enabled = false;
-            needle.RemoveComponent<DamageHero>();
+            needlePreload.LocateMyFSM("Control").enabled = false;
+            needlePreload.RemoveComponent<DamageHero>();
+
+            // Make the needle damage enemies
+            needlePreload.layer = 17;
+
+            var enemyDamager = needlePreload.GetAddComponent<DamageEnemies>();
+            enemyDamager.attackType = AttackTypes.Nail;
+            enemyDamager.circleDirection = true;
+            enemyDamager.damageDealt = PlayerData.instance.GetInt(nameof(PlayerData.nailDamage));
+            enemyDamager.direction = 180f;
+            enemyDamager.ignoreInvuln = false;
+            enemyDamager.magnitudeMult = 1;
+            enemyDamager.moveDirection = true;
+            enemyDamager.specialType = SpecialTypes.None;
 
             // Get sounds
             var hornet = BossAbilities.Preloads["GG_Hornet_1"]["Boss Holder/Hornet Boss 1"];
             audioClips = Satchel.Futils.Extractors.AudioClips.GetAudioClips(hornet.GetComponent<PlayMakerFSM>());
-
-            Debug.Log(String.Join(", ", audioClips.Keys.ToArray()));
         }
 
         public void Perform() {
+            if (needle == null) {
+                needle = GameObject.Instantiate(needlePreload, HeroController.instance.transform.position, Quaternion.identity);
+                thread = needle.Find("Thread");
+            }
+            
             if (!needle.activeSelf) HeroController.instance.StartCoroutine(ThrowCoroutine());
             else HeroController.instance.StartCoroutine(PullCoroutine());
         }
