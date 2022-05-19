@@ -13,6 +13,7 @@ Set `HollowKnightFolder` to where your Managed folder is located and `OutputDire
     <HollowKnightFolder>C:\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed</HollowKnightFolder>
     <OutputDirectory>$(HollowKnightFolder)/Mods</OutputDirectory>
   </PropertyGroup>
-</Project>```
+</Project>
+```
 
 * Additionally, have Satchel 0.7.6 or above in your mods folder (can be downloaded from scarab)
