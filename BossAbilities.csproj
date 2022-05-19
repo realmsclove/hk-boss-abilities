@@ -2,44 +2,62 @@
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <OutputPath>bin/$(Configuration)/</OutputPath>
   </PropertyGroup>
+  
+    <!-- Create a LocalBuildProperties.props file which defines HollowKnightFolder (references dir) 
+  and OutputDirectory (where the post-build event sends the dll to) -->
+  <Import Project="LocalBuildProperties_example.props" Condition="Exists('LocalBuildProperties_example.props')"/>
+  <Import Project="LocalBuildProperties.props" Condition="Exists('LocalBuildProperties.props')"/>
 
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>lib/Assembly-CSharp.dll</HintPath>
+      <HintPath>$(HollowKnightFolder)\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="MMHOOK_Assembly-CSharp">
-      <HintPath>lib/MMHOOK_Assembly-CSharp.dll</HintPath>
+      <HintPath>$(HollowKnightFolder)\MMHOOK_Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="PlayMaker">
-      <HintPath>lib/PlayMaker.dll</HintPath>
+      <HintPath>$(HollowKnightFolder)\PlayMaker.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>lib/UnityEngine.dll</HintPath>
+      <HintPath>$(HollowKnightFolder)\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>lib/UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>$(HollowKnightFolder)\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Physics2DModule">
-      <HintPath>lib/UnityEngine.Physics2DModule.dll</HintPath>
+      <HintPath>$(HollowKnightFolder)\UnityEngine.Physics2DModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.ParticleSystemModule">
-      <HintPath>lib/UnityEngine.ParticleSystemModule.dll</HintPath>
+      <HintPath>$(HollowKnightFolder)\UnityEngine.ParticleSystemModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Physics2DModule">
-      <HintPath>lib/UnityEngine.Physics2DModule.dll</HintPath>
+      <HintPath>$(HollowKnightFolder)\UnityEngine.Physics2DModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AudioModule">
-      <HintPath>lib/UnityEngine.AudioModule.dll</HintPath>
+      <HintPath>$(HollowKnightFolder)\UnityEngine.AudioModule.dll</HintPath>
     </Reference>
     <Reference Include="Satchel">
-      <HintPath>lib/Satchel.dll</HintPath>
+      <HintPath>$(HollowKnightFolder)\Mods\Satchel\Satchel.dll</HintPath>
     </Reference>
   </ItemGroup>
 
   <Target Name="CopyMod" AfterTargets="PostBuildEvent">
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="/home/clove/.steam/steam/steamapps/common/Hollow Knight/hollow_knight_Data/Managed/Mods/BossAbilities" SkipUnchangedFiles="true" />
-    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="/home/clove/.steam/steam/steamapps/common/Hollow Knight/hollow_knight_Data/Managed/Mods/BossAbilities" SkipUnchangedFiles="true" />
-  </Target>
+        <Copy SourceFiles="$(TargetPath);$(TargetDir)$(TargetName).pdb" DestinationFolder="$(OutputDirectory)\$(TargetName)" SkipUnchangedFiles="true" />
+    </Target>
+    
+    <Target Name="CreateReleaseZip" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">
+        <MakeDir Directories="$(ProjectDir)Output" />
+        <Delete Files="$(ProjectDir)/$(TargetName).zip" />
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ProjectDir)/Output/" />
+        <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(ProjectDir)/Output/" />
+        <Copy SourceFiles="$(SolutionDir)/README.md" DestinationFolder="$(ProjectDir)/Output/" ContinueOnError="true" />
+        <ZipDirectory DestinationFile="$(ProjectDir)/$(TargetName).zip" SourceDirectory="$(ProjectDir)/Output" />
+        <RemoveDir Directories="$(ProjectDir)Output" />
+        
+        <GetFileHash Files="$(ProjectDir)/$(TargetName).zip" Algorithm="SHA256">
+            <Output TaskParameter="Items" ItemName="FilesWithHashes" />
+        </GetFileHash>
+        <Message Importance="High" Text="@(FilesWithHashes->'%(Identity): %(FileHash)')" />
+    </Target>
 </Project>
