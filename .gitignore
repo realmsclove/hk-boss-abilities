@@ -21,3 +21,10 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+/.vs/ProjectSettings.json
+/.vs/BossAbilities
+/.vs/ProjectEvaluation
+/.vs/Boss Abilities
+*.sqlite
+/.vs/VSWorkspaceState.json
+/BossAbilities
