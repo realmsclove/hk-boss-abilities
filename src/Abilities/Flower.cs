@@ -7,6 +7,17 @@ using System.Threading.Tasks;
 namespace BossAbilities.src.Abilities
 {
 
+    public class FlowerPrebas : IPrefab
+    {
+        public List<(string, string)> prefabs => new()
+        {
+            ("GG_Mantis_Lords", "Shot Mantis Lord"),
+            ("GG_Hollow_Knight", "Battle Scene/HK Prime"),
+            ("Deepnest_East_Hornet_boss", "Hornet Outskirts Battle Encounter/Thread"),
+            ("GG_Hornet_1", "Boss Holder/Hornet Boss 1/Needle"),
+            ("GG_Hornet_1", "Boss Holder/Hornet Boss 1")
+        };
+    }
     public class Flower : Ability, IAbility
     {
         static Sprite getActiveSprite() { return Satchel.AssemblyUtils.GetSpriteFromResources("flower.png"); }

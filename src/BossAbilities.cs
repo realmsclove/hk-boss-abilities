@@ -15,15 +15,23 @@ namespace BossAbilities {
 
         public static BossAbilities instance;
         // @TODO: have abilities declare the preloads they need and collect them here
-        public override List<(string, string)> GetPreloadNames() => new()
+        public override List<(string, string)> GetPreloadNames()
         {
-            ("GG_Mantis_Lords", "Shot Mantis Lord"),
-            ("GG_Hollow_Knight", "Battle Scene/HK Prime"),
-            ("Deepnest_East_Hornet_boss", "Hornet Outskirts Battle Encounter/Thread"),
-            ("GG_Hornet_1", "Boss Holder/Hornet Boss 1/Needle"),
-            ("GG_Hornet_1", "Boss Holder/Hornet Boss 1")
-        };
-
+            List<(string, string)> prefabs = new();
+            var assembly = Assembly.GetExecutingAssembly();
+            foreach (var type in assembly.GetTypes())
+            {
+                if (type.GetInterface(nameof(IPrefab)) != null)
+                {
+                    var prefab_list = (Activator.CreateInstance(type) as IPrefab);
+                    foreach(var name in prefab_list.prefabs)
+                    {
+                        prefabs.Add(name);
+                    }
+                }
+            }
+            return prefabs;
+        }
 
 
         public override void Initialize(Dictionary<string, Dictionary<string, GameObject>> preloadedObjects) {
