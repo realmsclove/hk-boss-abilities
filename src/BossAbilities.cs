@@ -6,11 +6,11 @@ using UnityEngine;
 using static AbilityChanger.AbilityChanger;
 
 namespace BossAbilities {
-    public class BossAbilities : Mod, IMenuMod,ILocalSettings<LocalSettings> {
+    public class BossAbilities : Mod, IMenuMod {
         public BossAbilities() : base("BossAbilities") {}
         public override string GetVersion() => "v0";
 
-        public static List<IAbility> Abilities= new();
+        public static List<BossAbility> Abilities= new();
         public static Dictionary<string, Dictionary<string, GameObject>> Preloads;
 
         public static BossAbilities instance;
@@ -24,10 +24,10 @@ namespace BossAbilities {
             var assembly = Assembly.GetExecutingAssembly();
             foreach (var type in assembly.GetTypes())
             {
-                if (type.GetInterface(nameof(IPrefab)) != null)
+                if (type.BaseType == typeof(BossAbility))
                 {
-                    var prefab_list = (Activator.CreateInstance(type) as IPrefab);
-                    foreach(var name in prefab_list.prefabs)
+                    Abilities.Add(Activator.CreateInstance(type) as BossAbility);
+                    foreach(var name in Abilities[Abilities.Count-1].prefabs)
                     {
                         prefabs.Add(name);
                     }
@@ -45,25 +45,18 @@ namespace BossAbilities {
         }
 
         private void LoadAbilities() {
-            // Find all abilities
-            var assembly = Assembly.GetExecutingAssembly();
-            foreach (var type in assembly.GetTypes()) {
-                if (type.BaseType ==typeof(Ability) && type.GetInterface(nameof(IAbility)) != null) {
-                    // Type is an ability
-                   Abilities.Add(Activator.CreateInstance(type) as IAbility);
-                }
-            }
-
-            foreach (Ability ability in Abilities) {
-                RegisterAbility((ability as IAbility).abilityReplaced, ability);
+            foreach (BossAbility ability in Abilities) {
+                RegisterAbility(ability.abilityReplaced, ability);
                 Log($"Registered ability {ability.name}!");
+                ability.Hooks();
+                Log($"Hooked Ability {ability.name}");
             }
         }
 
         public List<IMenuMod.MenuEntry> GetMenuData(IMenuMod.MenuEntry? toggleButtonEntry)
         {
             List<IMenuMod.MenuEntry> entries = new();
-            foreach(Ability ability in Abilities)
+            foreach(BossAbility ability in Abilities)
             {
                 entries.Add(
                     new IMenuMod.MenuEntry
@@ -74,14 +67,14 @@ namespace BossAbilities {
                             "Off",
                             "On"
                         },
-                        Saver = opt => (ability as IAbility).canUse = opt switch
+                        Saver = opt => ability.canUse = opt switch
                         {
                             0 => false,
                             1 => true,
                             // This should never be called
                             _ => throw new InvalidOperationException()
                         },
-                        Loader = () => (ability as IAbility).canUse switch
+                        Loader = () => ability.canUse switch
                         {
                             false => 0,
                             true => 1,
@@ -95,15 +88,7 @@ namespace BossAbilities {
 
         }
 
-        void ILocalSettings<LocalSettings>.OnLoadLocal(LocalSettings s)
-        {
-            ((ILocalSettings<LocalSettings>)instance).OnLoadLocal(s);
-        }
 
-        LocalSettings ILocalSettings<LocalSettings>.OnSaveLocal()
-        {
-            return ((ILocalSettings<LocalSettings>)instance).OnSaveLocal();
-        }
     }
 
 }

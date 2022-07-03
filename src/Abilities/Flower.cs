@@ -7,18 +7,7 @@ using System.Threading.Tasks;
 namespace BossAbilities.src.Abilities
 {
 
-    public class FlowerPrebas : IPrefab
-    {
-        public List<(string, string)> prefabs => new()
-        {
-            ("GG_Mantis_Lords", "Shot Mantis Lord"),
-            ("GG_Hollow_Knight", "Battle Scene/HK Prime"),
-            ("Deepnest_East_Hornet_boss", "Hornet Outskirts Battle Encounter/Thread"),
-            ("GG_Hornet_1", "Boss Holder/Hornet Boss 1/Needle"),
-            ("GG_Hornet_1", "Boss Holder/Hornet Boss 1")
-        };
-    }
-    public class Flower : Ability, IAbility
+    public class Flower : BossAbility
     {
         static Sprite getActiveSprite() { return Satchel.AssemblyUtils.GetSpriteFromResources("flower.png"); }
         static Sprite getInactiveSprite() { return Satchel.AssemblyUtils.GetSpriteFromResources("flower.png"); }
@@ -27,12 +16,25 @@ namespace BossAbilities.src.Abilities
         public override string description { get => "Ability to Teleport."; set { } }
         public override Sprite activeSprite { get => getActiveSprite(); set { } }
         public override Sprite inactiveSprite { get => getInactiveSprite(); set { } }
-        public string abilityReplaced => AbilityChanger.Abilities.NAIL;
+        public override string abilityReplaced => AbilityChanger.Abilities.NAIL;
+        public override List<(string, string)> prefabs => new()
+        {
+            ("GG_Mantis_Lords", "Shot Mantis Lord"),
+            ("GG_Hollow_Knight", "Battle Scene/HK Prime"),
+            ("Deepnest_East_Hornet_boss", "Hornet Outskirts Battle Encounter/Thread"),
+            ("GG_Hornet_1", "Boss Holder/Hornet Boss 1/Needle"),
+            ("GG_Hornet_1", "Boss Holder/Hornet Boss 1")
+        };
 
-        public bool canUse { get; set; } 
+        public override bool canUse { get; set; } 
 
         public static  GameObject flower;
         public Flower() 
+        {
+            
+        }
+
+        public override void Hooks()
         {
             #region Defining GOs
             flower = new GameObject()
@@ -45,8 +47,8 @@ namespace BossAbilities.src.Abilities
             sr.color = new Color(1f, 1f, 1f, 1.0f);
             flower.SetActive(false);
             GameObject.DontDestroyOnLoad(flower);
-            canUse = false;
- 
+            canUse = true;
+
             #endregion
         }
 
@@ -57,9 +59,6 @@ namespace BossAbilities.src.Abilities
             f.transform.position = HeroController.instance.transform.position + new Vector3(UnityEngine.Random.Range(-0.1f, 0.1f), UnityEngine.Random.Range(0.2f, -0.2f) - 1f, -0.01f);
             f.SetActive(true);
         }
-
-        public override bool hasAbility() => canUse;
-
         public void handleAbilityUse()
         {
             plantFlower();
