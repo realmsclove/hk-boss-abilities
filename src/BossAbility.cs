@@ -13,6 +13,7 @@ namespace BossAbilities
         public abstract bool canUse { get; set; }
         public override bool hasAbility() => canUse;
         public virtual List<(string, string)> prefabs { get; }
+        public virtual void Hooks() { }
 
 
     }
