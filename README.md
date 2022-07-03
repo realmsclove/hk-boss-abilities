@@ -3,7 +3,9 @@ A Hollow Knight mod that gives you an ability from each boss after having defeat
 
 ## Currently Abilities
 * Mantis Lords "wind scythe" attack 
-
+* Hornet's NeedleHook
+* Soul Pillars
+* Flower (for tests)
 # Building
 Copy the `LocalBuildProperties_example.props` and rename it to `LocalBuildProperties.props`. 
 Set `HollowKnightFolder` to where your Managed folder is located and `OutputDirectory` to Mods folder an example of the props file is given below
