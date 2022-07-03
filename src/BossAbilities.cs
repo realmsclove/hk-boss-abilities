@@ -6,7 +6,7 @@ using UnityEngine;
 using static AbilityChanger.AbilityChanger;
 
 namespace BossAbilities {
-    public class BossAbilities : Mod {
+    public class BossAbilities : Mod, IMenuMod,ILocalSettings<LocalSettings> {
         public BossAbilities() : base("BossAbilities") {}
         public override string GetVersion() => "v0";
 
@@ -14,6 +14,9 @@ namespace BossAbilities {
         public static Dictionary<string, Dictionary<string, GameObject>> Preloads;
 
         public static BossAbilities instance;
+
+        public bool ToggleButtonInsideMenu => true;
+
         // @TODO: have abilities declare the preloads they need and collect them here
         public override List<(string, string)> GetPreloadNames()
         {
@@ -55,6 +58,51 @@ namespace BossAbilities {
                 RegisterAbility((ability as IAbility).abilityReplaced, ability);
                 Log($"Registered ability {ability.name}!");
             }
+        }
+
+        public List<IMenuMod.MenuEntry> GetMenuData(IMenuMod.MenuEntry? toggleButtonEntry)
+        {
+            List<IMenuMod.MenuEntry> entries = new();
+            foreach(Ability ability in Abilities)
+            {
+                entries.Add(
+                    new IMenuMod.MenuEntry
+                    {
+                        Name = ability.name,
+                        Description = ability.description,
+                        Values = new string[] {
+                            "Off",
+                            "On"
+                        },
+                        Saver = opt => (ability as IAbility).canUse = opt switch
+                        {
+                            0 => false,
+                            1 => true,
+                            // This should never be called
+                            _ => throw new InvalidOperationException()
+                        },
+                        Loader = () => (ability as IAbility).canUse switch
+                        {
+                            false => 0,
+                            true => 1,
+
+                        }
+                    }
+                    );
+            }
+
+        return entries;
+
+        }
+
+        void ILocalSettings<LocalSettings>.OnLoadLocal(LocalSettings s)
+        {
+            ((ILocalSettings<LocalSettings>)instance).OnLoadLocal(s);
+        }
+
+        LocalSettings ILocalSettings<LocalSettings>.OnSaveLocal()
+        {
+            return ((ILocalSettings<LocalSettings>)instance).OnSaveLocal();
         }
     }
 

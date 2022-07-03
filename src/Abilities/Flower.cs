@@ -29,6 +29,8 @@ namespace BossAbilities.src.Abilities
         public override Sprite inactiveSprite { get => getInactiveSprite(); set { } }
         public string abilityReplaced => AbilityChanger.Abilities.NAIL;
 
+        public bool canUse { get; set; } 
+
         public static  GameObject flower;
         public Flower() 
         {
@@ -43,7 +45,7 @@ namespace BossAbilities.src.Abilities
             sr.color = new Color(1f, 1f, 1f, 1.0f);
             flower.SetActive(false);
             GameObject.DontDestroyOnLoad(flower);
-
+            canUse = false;
  
             #endregion
         }
@@ -56,7 +58,7 @@ namespace BossAbilities.src.Abilities
             f.SetActive(true);
         }
 
-        public override bool hasAbility() => true;
+        public override bool hasAbility() => canUse;
 
         public void handleAbilityUse()
         {
