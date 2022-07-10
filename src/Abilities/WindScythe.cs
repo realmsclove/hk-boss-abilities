@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 using UnityEngine;
 
 namespace BossAbilities {
-    public class WindScythe : IAbility {
+    /*public class WindScythe : IAbility {
         public string Name => "Wind Scythe";
         public AbilityTrigger Trigger => AbilityTrigger.Fireball;
 
@@ -24,5 +24,5 @@ namespace BossAbilities {
 
             scythe.LocateMyFSM("Control").SendEvent($"{type} {dir}");
         }
-    }
+    }*/
 }

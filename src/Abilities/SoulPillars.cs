@@ -5,7 +5,7 @@ using System;
 using System.Collections;
 using HutongGames.PlayMaker.Actions;
 namespace BossAbilities {
-    public class SoulPillars : IAbility {
+    /*public class SoulPillars : IAbility {
         public string Name => "Soul Pillars";
         public AbilityTrigger Trigger => AbilityTrigger.Quake;
 
@@ -50,5 +50,5 @@ namespace BossAbilities {
             yield return new WaitForSeconds(0.2f);
             HeroController.instance.gameObject.GetComponent<AudioSource>().PlayOneShot(Audio);
         }
-    }
+    }*/
 }

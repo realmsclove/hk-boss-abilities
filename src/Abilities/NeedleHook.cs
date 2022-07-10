@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace BossAbilities {
-    public class NeedleHook : IAbility {
+    /*public class NeedleHook : IAbility {
         public string Name => "Needle Hook";
         public AbilityTrigger Trigger => AbilityTrigger.Dash;
 
@@ -142,5 +142,5 @@ namespace BossAbilities {
 
             needle.SetActive(false);
         }
-    }
+    }*/
 }
